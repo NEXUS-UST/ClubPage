@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeScrollEffects();
     initializeContactForm();
     initializeAnimations();
+    initializeAINetwork();
 });
 
 // Navigation functionality
@@ -376,6 +377,210 @@ if (typeof module !== 'undefined' && module.exports) {
         initializeScrollEffects,
         initializeContactForm,
         initializeAnimations,
+        initializeAINetwork,
         throttle
     };
+}
+
+// AI Network Canvas Animation
+function initializeAINetwork() {
+    const container = document.querySelector('.nexus-graphic');
+    const canvas = document.getElementById('aiNetworkCanvas');
+    if (!container || !canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let dpr = Math.max(1, window.devicePixelRatio || 1);
+    let width = 0;
+    let height = 0;
+
+    const theme = {
+        nodeColor: 'rgba(125, 77, 181, 1)',
+        nodeGlow: 'rgba(125, 77, 181, 0.6)',
+        lineColor: 'rgba(125, 77, 181, 0.35)',
+        pulseColor: 'rgba(255, 255, 255, 0.95)',
+        bgFade: 'rgba(0, 0, 0, 0.08)'
+    };
+
+    const config = {
+        nodeCount: 14,
+        linkDistance: 120,
+        nodeRadius: 3,
+        pulseSpeed: 0.015, // 0..1 per frame
+        pulsesPerSec: 0.8
+    };
+
+    let nodes = [];
+    let links = [];
+    let pulses = [];
+    let lastTime = 0;
+    let rafId = null;
+
+    function resize() {
+        const rect = container.getBoundingClientRect();
+        width = Math.floor(rect.width);
+        height = Math.floor(rect.height);
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        initGraph();
+    }
+
+    function randomIn(min, max) { return Math.random() * (max - min) + min; }
+
+    function initGraph() {
+        const center = { x: width / 2, y: height / 2 };
+        const radius = Math.min(width, height) * 0.42;
+
+        nodes = Array.from({ length: config.nodeCount }, (_, i) => {
+            const angle = (i / config.nodeCount) * Math.PI * 2 + randomIn(-0.2, 0.2);
+            const r = radius * randomIn(0.55, 1);
+            return {
+                x: center.x + Math.cos(angle) * r,
+                y: center.y + Math.sin(angle) * r,
+                vx: randomIn(-0.2, 0.2),
+                vy: randomIn(-0.2, 0.2),
+                phase: Math.random() * Math.PI * 2
+            };
+        });
+
+        // Connect near neighbors to form an organic mesh
+        links = [];
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
+                const dist = Math.hypot(dx, dy);
+                if (dist < config.linkDistance) {
+                    links.push({ a: i, b: j, dist });
+                }
+            }
+        }
+
+        // Seed a few pulses
+        pulses = links.slice(0, 6).map(link => ({ linkIndex: links.indexOf(link), t: Math.random() }));
+    }
+
+    function step(dt) {
+        // Gentle node drift
+        const boundsPadding = 10;
+        for (const n of nodes) {
+            n.phase += dt * 0.0015;
+            n.x += Math.cos(n.phase) * 0.15 + n.vx * 0.02;
+            n.y += Math.sin(n.phase) * 0.15 + n.vy * 0.02;
+            // keep in bounds
+            n.x = Math.max(boundsPadding, Math.min(width - boundsPadding, n.x));
+            n.y = Math.max(boundsPadding, Math.min(height - boundsPadding, n.y));
+        }
+
+        // Advance pulses
+        for (const p of pulses) {
+            p.t += config.pulseSpeed * (dt / 16.67);
+        }
+        pulses = pulses.filter(p => p.t <= 1.2);
+
+        // Occasionally spawn new pulses
+        if (Math.random() < config.pulsesPerSec * (dt / 1000)) {
+            const li = Math.floor(Math.random() * links.length);
+            pulses.push({ linkIndex: li, t: 0 });
+        }
+    }
+
+    function draw() {
+        // Clear with slight trail for a smooth glow
+        ctx.fillStyle = theme.bgFade;
+        ctx.fillRect(0, 0, width, height);
+
+        // Draw links
+        ctx.lineWidth = 1;
+        for (const link of links) {
+            const a = nodes[link.a];
+            const b = nodes[link.b];
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const dist = Math.hypot(dx, dy);
+            const alpha = Math.max(0, 1 - dist / config.linkDistance);
+            ctx.strokeStyle = `rgba(125, 77, 181, ${0.12 + alpha * 0.25})`;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+        }
+
+        // Draw pulses traveling along links
+        for (const p of pulses) {
+            const link = links[p.linkIndex];
+            if (!link) continue;
+            const a = nodes[link.a];
+            const b = nodes[link.b];
+            const x = a.x + (b.x - a.x) * p.t;
+            const y = a.y + (b.y - a.y) * p.t;
+            const r = 2.2 + Math.sin(p.t * Math.PI) * 2.2;
+            const grd = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
+            grd.addColorStop(0, theme.pulseColor);
+            grd.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = grd;
+            ctx.beginPath();
+            ctx.arc(x, y, r * 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Draw nodes
+        for (const n of nodes) {
+            const r = config.nodeRadius + (Math.sin(n.phase * 2) + 1) * 0.6;
+            ctx.fillStyle = theme.nodeColor;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+            ctx.fill();
+
+            // glow
+            const glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * 4);
+            glow.addColorStop(0, theme.nodeGlow);
+            glow.addColorStop(1, 'rgba(125, 77, 181, 0)');
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, r * 3.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function loop(ts) {
+        if (!lastTime) lastTime = ts;
+        const dt = Math.min(50, ts - lastTime);
+        lastTime = ts;
+        step(dt);
+        draw();
+        rafId = requestAnimationFrame(loop);
+    }
+
+    const onResize = throttle(resize, 150);
+    window.addEventListener('resize', onResize);
+
+    resize();
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(loop);
+
+    // Pause animation when section not visible
+    const hero = document.querySelector('.hero');
+    const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                if (!rafId) rafId = requestAnimationFrame(loop);
+            } else {
+                if (rafId) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+            }
+        }
+    }, { threshold: 0.05 });
+    if (hero) io.observe(hero);
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+        if (rafId) cancelAnimationFrame(rafId);
+        window.removeEventListener('resize', onResize);
+        io.disconnect();
+    });
 }
