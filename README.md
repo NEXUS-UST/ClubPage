@@ -41,7 +41,7 @@ Ready to be part of the NEXUS community? Here's how you can get involved:
 
 ## 📞 Contact Us
 
-- **Email**: nexus@stthomas.edu
+- **Email**: nexus@everjust.org
 - **Location**: University of St. Thomas, St. Paul, Minnesota
 - **Website**: [ustnexus.club](https://ustnexus.club)
 
@@ -93,4 +93,4 @@ This project is open source and available under the [MIT License](LICENSE).
 **NEXUS - University of St. Thomas**  
 *Connecting Innovation, Technology, and Excellence*
 
-For more information, visit [ustnexus.club](https://ustnexus.club) or contact us at nexus@stthomas.edu.
+For more information, visit [ustnexus.club](https://ustnexus.club) or contact us at nexus@everjust.org.
