@@ -1305,6 +1305,144 @@ section {
     }
 }
 
+/* Enhanced Mobile Optimization */
+@media (max-width: 360px) {
+    /* Extra small devices */
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .nav-container {
+        padding: 0 1rem;
+    }
+    
+    .hero-container {
+        padding: 5rem 1rem 2rem;
+    }
+    
+    .title-main {
+        font-size: clamp(2.5rem, 12vw, 4rem);
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        padding: 1rem 1.5rem;
+        font-size: 0.95rem;
+        min-height: 48px; /* Better touch targets */
+        max-width: 100%;
+    }
+    
+    .about-card,
+    .contact-form-container,
+    .join-card {
+        padding: 1.5rem;
+        margin: 0 0.5rem;
+    }
+    
+    .section-title {
+        font-size: clamp(2rem, 8vw, 2.8rem);
+    }
+    
+    .contact-method {
+        padding: 1.5rem;
+        margin: 0 0.5rem;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+    /* Optimize for touch devices */
+    .nav-link,
+    .btn-primary,
+    .btn-secondary,
+    .social-link {
+        min-height: 44px; /* Apple's minimum touch target */
+        min-width: 44px;
+    }
+    
+    .nav-toggle {
+        padding: 12px;
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Remove hover effects that don't work well on touch */
+    .about-card:hover,
+    .contact-method:hover,
+    .feature:hover {
+        transform: none;
+    }
+    
+    /* Enhance focus states for touch navigation */
+    .btn-primary:focus,
+    .btn-secondary:focus,
+    .nav-link:focus {
+        outline: 3px solid var(--primary-purple);
+        outline-offset: 3px;
+    }
+}
+
+/* Performance optimizations for mobile */
+@media (max-width: 768px) {
+    /* Reduce animations on mobile for better performance */
+    .floating-particles {
+        display: none;
+    }
+    
+    .hero-visual,
+    .vision-graphic {
+        display: none;
+    }
+    
+    /* Optimize images for mobile */
+    .hero-logo-img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    /* Simpler shadows for better mobile performance */
+    .hero-logo-img {
+        box-shadow: 
+            0 0 15px rgba(102, 51, 153, 0.8),
+            0 0 30px rgba(102, 51, 153, 0.4);
+    }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero {
+        min-height: auto;
+        padding: 4rem 0 2rem;
+    }
+    
+    .hero-container {
+        padding: 4rem 1.5rem 2rem;
+    }
+    
+    .title-main {
+        font-size: clamp(2.5rem, 6vw, 3.5rem);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+}
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     *,
