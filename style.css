@@ -1540,7 +1540,6 @@ section {
         rgba(0, 0, 0, 0.95) 55%,
         rgba(0, 0, 0, 0.9) 100%
       ),
-      url("stthomas.jpg") center/cover no-repeat,
       radial-gradient(
         circle at 20% 80%,
         rgba(102, 51, 153, 0.1) 0%,
@@ -1553,17 +1552,9 @@ section {
       );
   }
 
-  /* soften and slow sweep for mobile */
+  /* remove sweep overlay on mobile */
   .hero::after {
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.05) 12%,
-      rgba(255, 255, 255, 0.1) 18%,
-      rgba(255, 255, 255, 0.05) 24%,
-      rgba(255, 255, 255, 0) 32%
-    );
-    animation: sweepLeftRight 10s linear infinite;
+    content: none;
   }
 }
 
