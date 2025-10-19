@@ -122,7 +122,7 @@ function initializeScrollEffects() {
         }
     }
 
-    window.addEventListener('scroll', requestHeaderUpdate);
+    window.addEventListener('scroll', requestHeaderUpdate, { passive: true });
 
     // Initial call
     updateHeader();
@@ -248,14 +248,23 @@ function initializeAnimations() {
 
 // Utility function for throttling
 function throttle(func, wait) {
-    let timeout;
+    let lastTime = 0;
+    let timeout = null;
+    
     return function executedFunction(...args) {
-        const later = () => {
+        const now = Date.now();
+        const timeSinceLastCall = now - lastTime;
+        
+        if (timeSinceLastCall >= wait) {
+            lastTime = now;
+            func.apply(this, args);
+        } else {
             clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+            timeout = setTimeout(() => {
+                lastTime = Date.now();
+                func.apply(this, args);
+            }, wait - timeSinceLastCall);
+        }
     };
 }
 
@@ -356,18 +365,19 @@ if ('performance' in window) {
     });
 }
 
-// Service Worker registration (if available)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('SW registered: ', registration);
-            })
-            .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-            });
-    });
-}
+// Service Worker registration (disabled - no sw.js file)
+// Uncomment and create sw.js if you want offline support
+// if ('serviceWorker' in navigator) {
+//     window.addEventListener('load', () => {
+//         navigator.serviceWorker.register('/sw.js')
+//             .then(registration => {
+//                 console.log('SW registered: ', registration);
+//             })
+//             .catch(registrationError => {
+//                 console.log('SW registration failed: ', registrationError);
+//             });
+//     });
+// }
 
 // Export functions for testing (if needed)
 if (typeof module !== 'undefined' && module.exports) {
@@ -463,12 +473,15 @@ function initializeAINetwork() {
     }
 
     function step(dt) {
-        // Gentle node drift
+        // Gentle node drift with optimized calculations
         const boundsPadding = 10;
+        const phaseIncrement = dt * 0.0015;
         for (const n of nodes) {
-            n.phase += dt * 0.0015;
-            n.x += Math.cos(n.phase) * 0.15 + n.vx * 0.02;
-            n.y += Math.sin(n.phase) * 0.15 + n.vy * 0.02;
+            n.phase += phaseIncrement;
+            const cosPhase = Math.cos(n.phase);
+            const sinPhase = Math.sin(n.phase);
+            n.x += cosPhase * 0.15 + n.vx * 0.02;
+            n.y += sinPhase * 0.15 + n.vy * 0.02;
             // keep in bounds
             n.x = Math.max(boundsPadding, Math.min(width - boundsPadding, n.x));
             n.y = Math.max(boundsPadding, Math.min(height - boundsPadding, n.y));

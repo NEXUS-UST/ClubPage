@@ -1,0 +1,15 @@
+{
+  "name": "nexus-club-page",
+  "version": "1.0.0",
+  "description": "NEXUS - University of St. Thomas Club Website",
+  "scripts": {
+    "dev": "live-server --port=3005 --host=localhost --ignore=node_modules",
+    "start": "npm run dev"
+  },
+  "keywords": ["nexus", "ust", "club"],
+  "author": "NEXUS",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
