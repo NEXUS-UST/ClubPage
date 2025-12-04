@@ -8,3 +8,6 @@ dist/
 build/
 .cache/
 .vscode/settings.json
+InternalSite/
+nexus-forum/
+simple-forum/
