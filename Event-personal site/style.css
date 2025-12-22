@@ -135,6 +135,20 @@ body {
     font-size: 1.125rem;
 }
 
+.nav-brand-mobile {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .nav-brand-desktop {
+        display: none;
+    }
+    
+    .nav-brand-mobile {
+        display: inline;
+    }
+}
+
 .nav-logo-img {
     width: 32px;
     height: 32px;

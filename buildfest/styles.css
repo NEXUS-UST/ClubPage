@@ -971,6 +971,20 @@ strong {
         display: flex;
     }
     
+    .nav-container {
+        justify-content: center;
+    }
+    
+    .nav-logo {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .mobile-menu-btn {
+        position: absolute;
+        right: var(--space-md);
+    }
+    
     .about-grid {
         grid-template-columns: 1fr;
     }
@@ -1065,10 +1079,6 @@ strong {
     
     .nav-container {
         padding: var(--space-xs) var(--space-sm);
-    }
-    
-    .logo-text {
-        display: none;
     }
     
     .float-item {
