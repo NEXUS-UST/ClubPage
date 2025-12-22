@@ -1,0 +1,3 @@
+[submodule "buildfest"]
+	path = buildfest
+	url = https://github.com/NEXUS-UST/TommieBuildfest.git
