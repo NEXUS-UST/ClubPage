@@ -161,8 +161,14 @@ function initScrollAnimations() {
     });
 }
 // ============================================
-// FORM HANDLING
+// FORM HANDLING - Connected to Airtable
 // ============================================
+const AIRTABLE_CONFIG = {
+    apiKey: 'patKqJJGIAn8Y4Cjp.279e600f502cfc52eb6eba999ed2a0ac94fda01809954917e2d86d36a748728c',
+    baseId: 'applXyc0faa313O70',
+    tableName: 'Buildfest'
+};
+
 function initFormHandling() {
     const form = document.getElementById('registrationForm');
     
@@ -189,19 +195,46 @@ function initFormHandling() {
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
         
-        // Simulate API call (replace with actual endpoint)
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+            // Send to Airtable
+            const response = await fetch(
+                `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${encodeURIComponent(AIRTABLE_CONFIG.tableName)}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fields: {
+                            'Name': data.name,
+                            'Email': data.email,
+                            'School': data.school,
+                            'Role': data.role,
+                            'Dietary': data.dietary || ''
+                          }
+                    })
+                }
+            );
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error?.message || 'Registration failed');
+            }
+            
+            // Show success message
+            showNotification('🎉 Registration successful! We\'ll see you at Tommie Buildfest!', 'success');
+            
+            // Reset form
+            form.reset();
+            
+        } catch (error) {
+            console.error('Registration error:', error);
+            showNotification('❌ Registration failed. Please try again or email buildfest@stthomas.edu', 'error');
+        }
         
-        // Show success message
-        showNotification('🎉 Registration successful! Check your email for confirmation.', 'success');
-        
-        // Reset form
-        form.reset();
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-        
-        // Log data (for demo purposes)
-        console.log('Registration data:', data);
     });
     
     // Add floating label effect
