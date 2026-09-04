@@ -164,7 +164,7 @@ function initScrollAnimations() {
 // FORM HANDLING - Connected to Airtable
 // ============================================
 const AIRTABLE_CONFIG = {
-    apiKey: 'patKqJJGIAn8Y4Cjp.279e600f502cfc52eb6eba999ed2a0ac94fda01809954917e2d86d36a748728c',
+    apiKey: '', // REMOVED 2026-09-04 - a public page must never hold an Airtable write token. Route this through a server-side proxy; see SECURITY.md,
     baseId: 'applXyc0faa313O70',
     tableName: 'Buildfest'
 };

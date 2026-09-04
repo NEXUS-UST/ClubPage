@@ -11,7 +11,7 @@ NodeBB is a Node.js-based forum that's easier to deploy on Render.
 ```bash
 # Create a new NodeBB instance
 curl -X POST "https://api.render.com/v1/services" \
-  -H "Authorization: Bearer rnd_9a3fo91NHCrQ3XWT24jFpNSI2FOi" \
+  -H "Authorization: Bearer <RENDER_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{
     "type": "web_service",
