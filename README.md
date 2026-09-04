@@ -1,96 +1,99 @@
-# NEXUS - University of St. Thomas
+# NEXUS at the University of St. Thomas
 
-[![Website](https://img.shields.io/website-up-down-green-red/https/ustnexus.club.svg)](https://ustnexus.club)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+NEXUS is a student club that builds things with AI, and this is the website it runs on.
 
-> Connecting Innovation, Technology, and Excellence
+**Status:** Live · GitHub Pages from `main` · 37 commits · public
 
-NEXUS is a dynamic student organization at the University of St. Thomas, dedicated to fostering innovation, building meaningful connections, and pursuing excellence in all endeavors.
+|  |  |
+|---|---|
+| **What it is** | The public website for NEXUS — who the club is, who runs it, how to join, and the Buildfest event site |
+| **Who it's for** | UST students deciding whether to join, plus judges, mentors and sponsors |
+| **Live at** | [ustnexus.club](https://ustnexus.club) · [/board.html](https://ustnexus.club/board.html) · [/buildfest/](https://ustnexus.club/buildfest/) |
+| **Stack** | HTML · CSS · vanilla JavaScript · GitHub Pages · custom domain |
+| **Status** | Live · HTTPS certificate approved · last content update February 2026 |
 
-## 🌟 About NEXUS
+A student club gets one shot at a first impression: a link in a group chat, opened on a phone,
+between classes. This repository is that link. It is three hand-written pages — the club, the
+board, and the event — with no CMS, no framework and no build step, so any member with a text
+editor can fix a typo and see it live two minutes later.
 
-NEXUS represents the intersection of possibility and action. We envision a community where innovative thinking is not just encouraged but expected, where technology serves as a bridge to new opportunities, and where excellence is the standard by which we measure our impact.
+## What it does
 
-### Our Core Values
+- **Introduces the club** — what NEXUS is, its three values, and its vision, on one scrolling page
+- **Names the people** — eight board members with photos and LinkedIn profiles, on the homepage and at `/board.html`
+- **Runs recruitment** — a "Join the Movement" section and a contact form for prospective members
+- **Hosts Buildfest** — the full event microsite at `/buildfest/`: theme, judges, schedule, FAQ and registration
+- **Publishes the winners** — the three winning Buildfest projects, credited, after the event
+- **Catches bad URLs** — a branded 404 page instead of GitHub's default
 
-- **Innovation Hub**: A dynamic space where creative minds converge to develop groundbreaking solutions
-- **Collaborative Network**: Fostering connections between students, faculty, and industry professionals  
-- **Excellence Driven**: Committed to the highest standards of quality, integrity, and achievement
+## Who it's for
 
-## 🚀 What We Do
+Students first. Everything above the fold answers "should I join this?" and every path leads to the
+same two actions: email the club, or come to the next event. Judges, mentors and sponsors get the
+second audience: `/buildfest/` is written for them, which is why the schedule and the FAQ are on the
+public page rather than in a shared document.
 
-- **Innovation Projects**: Transform ideas into tangible solutions that make a real difference
-- **Networking Events**: Connect with professionals, alumni, and industry leaders
-- **Skill Development**: Build technical and leadership capabilities through hands-on experience
-- **Leadership Opportunities**: Take ownership and drive meaningful change in your community
+## Quickstart
 
-## 🎯 Our Vision
+The site is static. Clone it and open `index.html`, or run a server so relative paths resolve:
 
-1. **Transform Ideas**: Convert innovative concepts into tangible solutions that make a real difference
-2. **Build Connections**: Create lasting networks that span disciplines, industries, and possibilities
-3. **Drive Excellence**: Set new standards for achievement and inspire others to reach their full potential
+```bash
+git clone https://github.com/NEXUS-UST/ClubPage.git
+cd ClubPage
+npm install && npm run dev        # live-server on http://localhost:3005
+```
 
-## 💼 Get Involved
+No Node available, no problem — anything that serves a directory works:
 
-Ready to be part of the NEXUS community? Here's how you can get involved:
+```bash
+python3 -m http.server 8000
+```
 
-- **Join Our Organization**: Become a member and participate in our initiatives
-- **Attend Events**: Join our networking events, workshops, and project showcases
-- **Lead a Project**: Propose and lead your own innovation project
-- **Partner with Us**: Organizations interested in collaboration opportunities
+The only dev dependency is `live-server`. There is no build, no bundler and no framework.
 
-## 📞 Contact Us
+## How it's organised
 
-- **Email**: nexus@stthomas.edu
-- **Location**: University of St. Thomas, St. Paul, Minnesota
-- **Website**: [ustnexus.club](https://ustnexus.club)
+```
+ClubPage/
+├── index.html          # The homepage: home, about, vision, board, join, contact
+├── board.html          # Standalone board page — the eight members, photos and LinkedIn links
+├── 404.html            # Branded not-found page (custom_404 enabled on Pages)
+├── style.css           # Design system: dark theme, UST purple, Inter + JetBrains Mono
+├── script.js           # Nav, scroll animations, contact-form validation
+├── buildfest/          # Tommie Buildfest 2026 microsite: about, judges, winners, schedule, FAQ
+│   ├── index.html
+│   ├── styles.css
+│   ├── script.js
+│   └── pictures/       # Winner and group photos
+├── Event-personal site/  # Older copy of the build workshop — superseded, see below
+├── package.json        # Only a dev dependency: live-server
+├── CNAME               # ustnexus.club — read by GitHub Pages
+└── .nojekyll           # Serve files as-is; skip Jekyll processing
+```
 
-## 🛠️ Technical Details
+Images are committed at full resolution, so the repository is around 18 MB — most of it photography.
 
-This website is built with:
-- **HTML5** - Semantic markup and accessibility
-- **CSS3** - Modern styling with CSS Grid and Flexbox
-- **Vanilla JavaScript** - Progressive enhancement and interactivity
-- **GitHub Pages** - Static site hosting
-- **Custom Domain** - ustnexus.club
+## Deploying
 
-### Features
+GitHub Pages serves `main` from the repository root. Push and it is live; there is no workflow file.
+The custom domain comes from `CNAME`, the certificate covers `ustnexus.club` and `www.ustnexus.club`,
+and a custom 404 is enabled. To roll back, revert the commit and push — the previous build is not kept.
 
-- ✅ Responsive design (mobile-first approach)
-- ✅ Dark theme with UST purple branding
-- ✅ Smooth scrolling navigation
-- ✅ Interactive animations and effects
-- ✅ Contact form with validation
-- ✅ Accessibility-focused (WCAG 2.1 AA)
-- ✅ Performance optimized
-- ✅ SEO friendly
+## Known limitations
 
-## 🚀 Development
+- **The contact form does not deliver.** `script.js` validates the fields and shows a success
+  message, but submission is simulated locally. Use the `mailto:` link until a form backend is wired in.
+- **`/buildfest/` is not linked from the homepage.** It is reachable only by typing the URL.
+- **`Event-personal site/` is a stale duplicate** of the workshop site, including its own `CNAME`.
+  The maintained version is [NEXUS-UST/build-workshop](https://github.com/NEXUS-UST/build-workshop).
+- **`DEPLOY_INSTRUCTIONS.md` and `nodebb-setup.md` describe an abandoned forum project**, not this
+  site. They are out of date and should be deleted rather than followed.
+- **HTTPS is not enforced** in the Pages settings, though a valid certificate exists.
 
-### Local Development
+## License
 
-1. Clone the repository
-2. Open `index.html` in your browser
-3. For live reload, use a local server:
-   ```bash
-   # Python 3
-   python -m http.server 8000
-   
-   # Node.js
-   npx serve .
-   ```
+MIT for the site code, as declared in `package.json`. No `LICENSE` file is committed yet, so add one
+before reusing the code. Club branding, photographs and member portraits are not covered — ask first
+at [nexus@stthomas.edu](mailto:nexus@stthomas.edu).
 
-### Deployment
-
-The site automatically deploys to GitHub Pages when changes are pushed to the main branch.
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-**NEXUS - University of St. Thomas**  
-*Connecting Innovation, Technology, and Excellence*
-
-For more information, visit [ustnexus.club](https://ustnexus.club) or contact us at nexus@stthomas.edu.
+Workshop material: [NEXUS-UST/build-workshop](https://github.com/NEXUS-UST/build-workshop).
