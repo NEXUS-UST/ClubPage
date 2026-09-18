@@ -136,21 +136,30 @@ function initializeContactForm() {
             
             const submitButton = contactForm.querySelector('button[type="submit"]');
             const originalText = submitButton.textContent;
+            const destinationEmail = 'pung9232@stthomas.edu';
             
             // Show loading state
             submitButton.textContent = 'Sending...';
             submitButton.disabled = true;
             
             try {
-                // Get form data
                 const formData = new FormData(contactForm);
-                
-                // Here you would typically send the form data to your backend
-                // For now, we'll simulate a successful submission
-                await simulateFormSubmission(formData);
-                
-                // Show success message
-                showFormMessage('Thank you for your message! We\'ll get back to you soon.', 'success');
+                const firstName = (formData.get('firstName') || '').toString().trim();
+                const lastName = (formData.get('lastName') || '').toString().trim();
+                const email = (formData.get('email') || '').toString().trim();
+                const interest = (formData.get('interest') || '').toString().trim();
+                const message = (formData.get('message') || '').toString().trim();
+
+                const subject = encodeURIComponent(`NEXUS inquiry from ${firstName} ${lastName}`.trim());
+                const body = encodeURIComponent(
+                    `Name: ${firstName} ${lastName}\n` +
+                    `Email: ${email}\n` +
+                    `Area of Interest: ${interest || 'Not specified'}\n\n` +
+                    `Message:\n${message}`
+                );
+
+                window.location.href = `mailto:${destinationEmail}?subject=${subject}&body=${body}`;
+                showFormMessage('Your email app has opened with the message ready to send.', 'success');
                 contactForm.reset();
                 
             } catch (error) {
@@ -163,20 +172,6 @@ function initializeContactForm() {
             }
         });
     }
-}
-
-// Simulate form submission (replace with actual backend call)
-function simulateFormSubmission(formData) {
-    return new Promise((resolve) => {
-        // Log form data for development
-        console.log('Form submitted with data:');
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-        
-        // Simulate network delay
-        setTimeout(resolve, 1500);
-    });
 }
 
 // Show form submission messages
